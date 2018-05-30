@@ -1,6 +1,6 @@
 # conv-pure-numpy
 
-This repo builds a multi-layer convolutional neural network without any deep learning tools, including TF, Keras, etc.
+This repo builds a multi-layer convolutional neural network with numpy, and without any deep learning tools, including TF, Keras, etc.
 
 ## Comments
 * Convolutional layers are established and tested using an example cat image. **No errors**.
