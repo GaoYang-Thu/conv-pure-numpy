@@ -25,6 +25,7 @@ RELOAD_RAW_DATA = False # control whether to reload data from raw images
 IMG_SIZE = 50
 POOLING_SIZE = 2
 POOLING_STRIDE = 2
+VAL_FRACTION = 0.2
 EPOCH_NUM = 10
 
 def l1_filter():
