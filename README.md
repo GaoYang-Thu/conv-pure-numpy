@@ -2,6 +2,15 @@
 
 This repo builds a multi-layer convolutional neural network with numpy, and without any deep learning tools, including TF, Keras, etc.
 
+## About the cnn
+* input -> conv layer 1 -> conv layer 2 -> fully connect layer -> output label
+* input image size: `50 by 50`
+* filter pile of 1<sup>th</sup> convolutional layer: 6 filters, size of each = `11 by 11`
+* filter pile of 2<sup>nd</sup> convolutional layer: 12 filters, size of each = `5 by 5`
+* input array of fully conncect layer: length = `12 * 8 * 8 = 768`
+* weights array of fully connect layer: `2 * 768`
+* final output: `1 * 2` array
+
 ## Comments
 * Convolutional layers are established and tested using an example cat image. **No errors**.
 * Forward pass through cnn is so slow...
