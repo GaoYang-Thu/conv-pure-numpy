@@ -6,12 +6,11 @@ Created on Wed May 30 09:59:26 2018
 """
 import numpy as np
 from img_defs import create_train_data, process_test_data
-from cnn_defs import conv_pile, avg_pooling, relu, sigmoid
+from cnn_defs import conv_single_pile, conv_pile_pile, avg_pooling, relu, vector_and_concat, sigmoid, calculate_loss
 import config_cov as cf
-import math
 import cv2
 
-epoch_num = cf.EPOCH_NUM
+
 
 if __name__ == '__main__':
     
@@ -19,43 +18,60 @@ if __name__ == '__main__':
     '''test '''
 #    # use single test image first
 #    img = cv2.imread('cat.jpg',cv2.IMREAD_GRAYSCALE)
+#    img = cv2.resize(img,(50,50))
+#    img = img - np.mean(img)
+#    filter_pile_l1 = cf.L1_FILTER
+#    filter_pile_l2 = cf.L2_FILTER
 #    
-#    l1_filter = cf.L1_FILTER
-#    l1_output = relu(pooling(conv(img, l1_filter)))
-#    print('layer1 convolution is done \n')
+#    l1 = conv_single_pile(img,filter_pile_l1)
+#    l1_out = relu(avg_pooling(l1))
+#    l2 = conv_pile_pile(l1_out,filter_pile_l2)
+#    l2_out = relu(avg_pooling(l2))
+#
 #    
-#    l2_shape = cf.L2_FILTER_SHAPE
-#    l2_filter = np.random.rand(l2_shape[0],l2_shape[1],l2_shape[2],l1_output.shape[-1])
-#    l2_output = relu(pooling(conv(l1_output, l2_filter)))
-#    print('layer2 convolution is done\n')
+#    fc = vector_and_concat(l2_out)
 #    
-#    l3_shape = cf.L3_FILTER_SHAPE
-#    l3_filter = np.random.rand(l3_shape[0],l3_shape[1],l3_shape[2],l2_output.shape[-1])
-#    l3_output = relu(pooling(conv(l2_output, l3_filter)))
-#    print('layer3 convolution is done\n')
+#    # fully connection
+#    fc_weights = cf.FULLY_CONNECT_WEIGHTS
+#    
+#    final_y = np.dot(fc_weights, fc)
+#    # no errors so far
+    
     
     '''real convolution network'''
     
     # data
-    training_data = create_train_data()
-    training_data_size = training_data.shape[0]
-    
-    validation_data_size = int(cf.VAL_FRACTION * training_data_size)
-    validating_data = training_data[-validation_data_size:]
-    training_data = training_data[:training_data_size-validation_data_size]
-    
+    training_data, validating_data = create_train_data()
     testing_data = process_test_data()
     
     # train
+    
+    # initialize parameters
+    filter_pile_l1 = cf.L1_FILTER
+    filter_pile_l2 = cf.L2_FILTER
+    fc_weights = cf.FULLY_CONNECT_WEIGHTS
+    train_error = np.zeros(training_data.shape[0])
+    epoch_num = cf.EPOCH_NUM
+    
+
     for i in range(epoch_num):
         for img_index in range(training_data.shape[0]):
+            
             img = training_data[img_index][0]
             img_true_label = training_data[img_index][1]
             
             # feed the image forward through the cnn
+            l1_out = relu(avg_pooling(conv_single_pile(img,filter_pile_l1)))
+            l2_out = avg_pooling(relu(conv_pile_pile(l1_out,filter_pile_l2)))
+            final_label = np.dot(fc_weights,vector_and_concat(l2_out))            
+            train_error[img_index] = calculate_loss(img_true_label, final_label)
+            
+            if img_index %20 == 0:
+                print('working on: image index: {}'.format(img_index))
             
             # backward from loss function
-            
+            pass
+    
     # validate
     for img_index in range(validating_data.shape[0]):
         pass

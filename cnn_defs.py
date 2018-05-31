@@ -97,7 +97,7 @@ def conv2d_backward(d_result_single, cache_single):
     
 
     
-def conv_pile(img_single, filter_pile):
+def conv_single_pile(img_single, filter_pile):
     '''
     2d convolution of a gray image and a pile of convolution filters
     
@@ -126,16 +126,60 @@ def conv_pile(img_single, filter_pile):
     
     for filter_index in range(filter_num):
         
-        print('Using filter number {}...'.format(filter_index + 1))
+        # print('Using filter number: {}...'.format(filter_index + 1))
         
         curr_filter = filter_pile[filter_index,:,:]
         
         feature_map_single = conv2d(img_single, curr_filter)[0] # we want only the conv result
         
         feature_map_pile[filter_index,:,:] = feature_map_single
-    
+        
+    # print('convolution using {} filters is completed'.format(filter_num))
     return feature_map_pile
     
+
+
+
+
+
+def conv_pile_pile(img_pile, filter_pile):
+    '''
+    2d convolution of a pile of gray images and a pile of convolution filters
+    
+    Arguments:
+    img_pile ----- a pile of images to conv, 
+                   shape = (img_num, img_size_h, img_size_w)
+    filter_pile -- a pile of filters, 
+                   shape = (filter_num, filter_size, filter_size)
+    
+    Returns:
+    feature_map_pile -- a plie of convolution results,
+                        shape = (filter_num, img_size_h_cov, img_size_w_cov)
+        
+    '''
+            
+    (filter_num, filter_size, filter_size) = filter_pile.shape
+    (img_num, img_size_h, img_size_w) = img_pile.shape
+
+    img_size_h_cov = img_size_h - filter_size + 1
+    img_size_w_cov = img_size_w - filter_size + 1
+    
+    feature_map_pile = np.zeros((filter_num,
+                                 img_size_h_cov,
+                                 img_size_w_cov))
+    
+    for img_index in range(img_num):
+        # print('computing image number: {}...'.format(img_index+1))
+        img_single = img_pile[img_index,:,:]
+        feature_map_pile += conv_single_pile(img_single, filter_pile)
+        # print('computing image number: {} is completed.\n'.format(img_index+1))
+
+    return feature_map_pile
+
+
+
+
+
 def avg_pooling(feature_map_pile, 
                 pool_size = cf.POOLING_SIZE, 
                 stride = cf.POOLING_STRIDE):
@@ -174,8 +218,14 @@ def avg_pooling(feature_map_pile,
                 pool_result[img_index,r2,c2] = np.average(feature_map_pile[img_index,m:m+pool_size,n:n+pool_size])
                 c2 += 1
             r2 += 1
+    # print('average pooling is done.')
     return pool_result
     
+
+
+
+
+
 def relu(feature_map_pile):
     '''
     relu: y = x (if x > 0) or =0 (if x<=0)
@@ -196,11 +246,65 @@ def relu(feature_map_pile):
                 # if x<0, replace x with 0
                 if feature_map_pile[img_index,m,n] < 0:
                     relu_result[img_index,m,n] = 0
+    # print('relu activation is completed.')
     return relu_result
         
-def sigmoid(x):
-    return 1. / (1 + np.exp(x))
 
+
+
+
+def sigmoid(x):
+    return 1. / (1 + np.exp(-x))
+
+
+
+def vector_and_concat(img_pile):
+    '''
+    1,vectorize every img in the pile into an 1d array
+    2,concatenate those arrays into a long array
+    
+    Arguments:
+    img_pile -- an image pile after convolution,
+                shape = (img_num, img_size_h_cov, img_size_w_cov)
+
+    Intermediate result:
+    img_array -- a 2d array, shape = (img_num, img_size_h_cov * img_size_w_cov)
+    
+    Returns:
+    vc_result -- an 1d array,
+                 length = (filter_num * img_size_h_pool * img_size_w_pool)
+    
+    '''
+    
+    (img_num, img_size_h_cov, img_size_w_cov) = img_pile.shape
+    
+    # create a 2d array img_array
+    # then store img_array of each image in each row
+    img_array_2d = np.zeros((img_num, img_size_h_cov * img_size_w_cov))
+    
+    for img_index in range(img_num):
+        img_array_2d[img_index] = np.concatenate(img_pile[img_index,:,:])
+    
+    vc_result = np.concatenate(img_array_2d)
+    
+    return vc_result
+
+
+
+def calculate_loss(true_label, output_label):
+    
+    if len(true_label) != len(output_label):
+        print('true label and output label must match.')
+    
+    error_array = true_label - output_label
+    loss_num = 0.5 * np.dot(error_array.T, error_array)
+    return loss_num
+    
+    
+    
+    
+    
+    
     
     
     

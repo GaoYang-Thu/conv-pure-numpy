@@ -4,8 +4,8 @@ Created on Tue May 29 15:03:47 2018
 
 @author: YangGao
 """
-
 import numpy as np
+from filter_generator_defs import filter_pile_generator, fully_connect_weights
 
 '''
 PATH
@@ -16,7 +16,7 @@ TEST_PATH = 'K://Documents//Projects//machine-learning-basic//conv-pure-numpy//d
 '''
 HYPERPARAMETERS
 '''
-LEARNING_RATE = 1E-3
+LEARNING_RATE = 0.1
 
 RELOAD_RAW_DATA = False # control whether to reload data from raw images
 # True : Reload from raw images
@@ -26,21 +26,13 @@ IMG_SIZE = 50
 POOLING_SIZE = 2
 POOLING_STRIDE = 2
 VAL_FRACTION = 0.2
-EPOCH_NUM = 10
+EPOCH_NUM = 1
 
-def l1_filter():
-    L1_FILTER_SHAPE = (2,3,3)
-    L1_FILTER = np.zeros(L1_FILTER_SHAPE)
-    L1_FILTER[0,:,:] = np.array([[-1,0,1],
-                                [-1,0,1],
-                                [-1,0,1]])
-    L1_FILTER[1,:,:] = np.array([[1,1,1],
-                                [0,0,0],
-                                [-1,-1,-1]])
-    return L1_FILTER
+# set filter_size of layer 1 and 2 according to input img size
 
-L1_FILTER = l1_filter()
+L1_FILTER = filter_pile_generator(6,11)
 
-L2_FILTER_SHAPE = np.array([3,5,5])
+L2_FILTER = filter_pile_generator(12,5)
 
-L3_FILTER_SHAPE = np.array([1,7,7])
+FULLY_CONNECT_WEIGHTS = fully_connect_weights(2, 8*8*12)
+

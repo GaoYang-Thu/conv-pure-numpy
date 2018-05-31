@@ -18,6 +18,7 @@ train_dir = cf.TRAIN_PATH
 test_dir = cf.TEST_PATH
 img_size = cf.IMG_SIZE
 reload_raw = cf.RELOAD_RAW_DATA # reload or not??
+val_fraction = cf.VAL_FRACTION
 
 def label_img(img_name):
     '''convert file names (cat.xx.jpg and dog.xx.jpg) to [1,0] and [0,1], respectively'''
@@ -52,8 +53,18 @@ def create_train_data():
             training_data.append([np.array(image),np.array(label)])
             shuffle(training_data)
             np.save('training_data.npy',training_data)
-    return training_data
+            
+    training_data_size = training_data.shape[0]
+    validation_data_size = int(val_fraction * training_data_size)
+    validating_data = training_data[-validation_data_size:]
+    training_data = training_data[:training_data_size-validation_data_size]
+    print('validating data is created.')
     
+    return training_data, validating_data
+
+
+
+
 def process_test_data():
     '''
     read images in testing dataset directory,
