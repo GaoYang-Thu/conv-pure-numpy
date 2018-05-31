@@ -6,8 +6,9 @@ This repo builds a multi-layer convolutional neural network with numpy, and with
 * Convolutional layers are established and tested using an example cat image. **No errors**.
 * Currently: images could pass through multi-convolutional layers and result in feature maps (*they are just images, actually*).
 * Next: 
-    1. visualize all feature maps
-    2. start from these feature maps, build full connected layers, and reach final output (*the output array has 2 numbers: \[a,b]*)
+    1. visualize all feature maps.
+    2. start from these feature maps, build full connected layers, and reach final output (*the output array has 2 numbers: \[a,b]*).
+    3. build back-probagation of the convolutional layers and fully connection layers.
 
 ## *References*
 1. [仅用numpy完成卷积神经网络](https://m.aliyun.com/yunqi/articles/585741)
