@@ -14,4 +14,4 @@ This repo builds a multi-layer convolutional neural network with numpy, and with
 2. [ahmedfgad's cnn-numpy project](https://github.com/ahmedfgad/NumPyCNN)
 3. [Classifying Cats vs Dogs with a Convolutional Neural Network on Kaggle](https://pythonprogramming.net/convolutional-neural-network-kats-vs-dogs-machine-learning-tutorial/)
 4. [Back Propagation in Convolutional Neural Networks — Intuition and Code](https://becominghuman.ai/back-propagation-in-convolutional-neural-networks-intuition-and-code-714ef1c38199)
-5. [This awesome PDF on Derivation of Backpropagation in Convolutional Neural Network](https://pdfs.semanticscholar.org/5d79/11c93ddcb34cac088d99bd0cae9124e5dcd1.pdf)
+5. [This awesome PDF on Derivation of Backpropagation in (*a rather simple*) Convolutional Neural Network](https://pdfs.semanticscholar.org/5d79/11c93ddcb34cac088d99bd0cae9124e5dcd1.pdf)
