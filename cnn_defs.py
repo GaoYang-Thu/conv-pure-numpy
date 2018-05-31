@@ -176,18 +176,27 @@ def avg_pooling(feature_map_pile,
             r2 += 1
     return pool_result
     
-def relu(feature_maps):
-    relu_out = np.zeros(feature_maps.shape)
-    for map_num in np.arange(feature_maps.shape[-1]):
-        for m in np.arange(feature_maps.shape[0]):
-            for n in np.arange(feature_maps.shape[1]):
-#                relu_out[map_num,m,n] = np.max(0,feature_maps[map_num,m,n])
-                '''effective, althought not efficient'''
-                if feature_maps[m,n,map_num] < 0:
-                    relu_out[m,n,map_num] = 0
-                else:
-                    relu_out[m,n,map_num] = feature_maps[m,n,map_num]
-    return relu_out
+def relu(feature_map_pile):
+    '''
+    relu: y = x (if x > 0) or =0 (if x<=0)
+    
+    Arguments:
+    feature_map_pile -- image pile after convolution
+                        shape = (filter_num, img_size_h_cov, img_size_w_cov)
+    
+    
+    Returns:
+    relu_result -- image pile after relu,
+                   shape = (filter_num, img_size_h_pool, img_size_w_pool)
+    '''
+    relu_result = feature_map_pile
+    
+    for img_index,m,n in np.ndindex(feature_map_pile.shape):
+                #  effective, althought not efficient
+                # if x<0, replace x with 0
+                if feature_map_pile[img_index,m,n] < 0:
+                    relu_result[img_index,m,n] = 0
+    return relu_result
         
 def sigmoid(x):
     return 1. / (1 + np.exp(x))
