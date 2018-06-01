@@ -58,17 +58,21 @@ if __name__ == '__main__':
         for img_index in range(training_data.shape[0]):
             
             img = training_data[img_index][0]
+            img = img - np.mean(img)
+            img = img / np.std(img)
             img_true_label = training_data[img_index][1]
             
             # feed the image forward through the cnn
             l1_out = relu(avg_pooling(conv_single_pile(img,filter_pile_l1)))
             l2_out = avg_pooling(relu(conv_pile_pile(l1_out,filter_pile_l2)))
-            final_label = np.dot(fc_weights,vector_and_concat(l2_out))            
+            final_label_raw = np.dot(fc_weights,vector_and_concat(l2_out))
+            final_label = relu(final_label_raw)
             train_error[img_index] = calculate_loss(img_true_label, final_label)
             
             if img_index %20 == 0:
                 print('working on: image index: {}'.format(img_index))
             
+            # no errors so far
             # backward from loss function
             pass
     

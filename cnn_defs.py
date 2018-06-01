@@ -241,11 +241,11 @@ def relu(feature_map_pile):
     '''
     relu_result = feature_map_pile
     
-    for img_index,m,n in np.ndindex(feature_map_pile.shape):
+    for i in np.ndindex(feature_map_pile.shape):
                 #  effective, althought not efficient
                 # if x<0, replace x with 0
-                if feature_map_pile[img_index,m,n] < 0:
-                    relu_result[img_index,m,n] = 0
+                if feature_map_pile[i] < 0:
+                    relu_result[i] = 0
     # print('relu activation is completed.')
     return relu_result
         
