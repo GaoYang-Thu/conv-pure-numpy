@@ -5,6 +5,7 @@ This repo builds a multi-layer convolutional neural network with numpy, and with
 ## About my CNN
 * Network structure:
     * input -> 1<sup>th</sup> conv layer -> 2<sup>nd</sup> conv layer -> fully connect layer -> output label
+    * *(inspired by [Zhang Zhifei's work](https://pdfs.semanticscholar.org/5d79/11c93ddcb34cac088d99bd0cae9124e5dcd1.pdf))*
 * Details of each layer:
     * input image size: `50 by 50`
     * filter pile of 1<sup>th</sup> convolutional layer: `6` filters, size of each = `11 by 11`
