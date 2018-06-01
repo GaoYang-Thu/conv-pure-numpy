@@ -28,3 +28,4 @@ This repo builds a multi-layer convolutional neural network with numpy, and with
 4. [Back Propagation in Convolutional Neural Networks — Intuition and Code](https://becominghuman.ai/back-propagation-in-convolutional-neural-networks-intuition-and-code-714ef1c38199)
 5. [mayankgrwl97's cnn-backward code](https://gist.github.com/mayankgrwl97/7c85ed1cf353be7764e2fa8b010da4d3)
 6. [This awesome PDF on Derivation of Backpropagation in (*a rather simple*) Convolutional Neural Network](https://pdfs.semanticscholar.org/5d79/11c93ddcb34cac088d99bd0cae9124e5dcd1.pdf)
+7. [Stanford CS231n class on CNN](http://cs231n.github.io/convolutional-networks/)
