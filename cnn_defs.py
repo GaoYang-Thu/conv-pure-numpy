@@ -294,8 +294,8 @@ def vector_and_concat(img_pile):
     
     (img_num, img_size_h_cov, img_size_w_cov) = img_pile.shape
     
-    # create a 2d array img_array
-    # then store img_array of each image in each column
+    # create a 2d array: img_array
+    # then store vectorized result of each image (= an 1d array) in each column of img_array
     img_array_2d = np.zeros((img_size_h_cov * img_size_w_cov, img_num))
     
     for img_index in range(img_num):
