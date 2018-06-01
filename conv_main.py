@@ -6,7 +6,8 @@ Created on Wed May 30 09:59:26 2018
 """
 import numpy as np
 from img_defs import create_train_data, process_test_data
-from cnn_defs import conv_single_pile, conv_pile_pile, avg_pooling, relu, vector_and_concat, sigmoid, calculate_loss
+from cnn_defs import conv_single_pile, conv_pile_pile, avg_pooling, relu, vector_and_concat, sigmoid, calculate_loss, generate_row_vector, generate_column_vector
+
 import config_cov as cf
 import cv2
 
@@ -58,7 +59,7 @@ if __name__ == '__main__':
         # parameters for training and testing
     train_error = np.zeros(training_data.shape[0])
     epoch_num = cf.EPOCH_NUM
-    
+    learn_rate = cf.LEARNING_RATE
 
     for i in range(epoch_num):
         for img_index in range(training_data.shape[0]):
@@ -71,16 +72,24 @@ if __name__ == '__main__':
             # feed the image forward through the cnn
             l1_out = sigmoid(avg_pooling(conv_single_pile(img,filter_pile_l1)) + l1_thresholds)
             l2_out = avg_pooling(sigmoid(conv_pile_pile(l1_out,filter_pile_l2) + l2_thresholds))
-            final_label_raw = np.dot(fc_weights,vector_and_concat(l2_out)) + fc_thresholds
+            fc_input_array = vector_and_concat(l2_out)
+            final_label_raw = np.dot(fc_weights,fc_input_array) + fc_thresholds
             final_label = sigmoid(final_label_raw)
             train_error[img_index] = calculate_loss(img_true_label, final_label)
             
-            if img_index %20 == 0:
+            if img_index %10 == 0:
                 print('working on: image index: {}'.format(img_index))
             
             # no errors so far
-            # backward from loss function
-            pass
+            
+            # backward probagation from loss function
+            d_y = (img_true_label - final_label) * final_label * (1 - final_label)
+            d_fc_weights = np.dot(generate_column_vector(d_y),generate_row_vector(fc_input_array))
+#            d_fc_thresholds
+#            d_l2_filter_pile
+#            d_l2_thresholds
+#            d_l1_filter_pile
+#            d_l1_thresholds
     
     # validate
     for img_index in range(validating_data.shape[0]):

@@ -328,7 +328,67 @@ def conv2d_backward(d_result_single, cache_single):
     
     return d_img_single, d_filter_single
     
+
+
+
+
+def generate_row_vector(array_1d):
+    '''
+    generate an 2d row vector from 1d array
     
+    Arguments:
+    array_1d --------   shape = (length,)
+
+    
+    Returns:
+    row_vector --       shape = (1, length)
+    '''
+    array_length = len(array_1d)
+    row_vector = array_1d
+    
+    row_vector = row_vector.reshape(1, array_length)
+    return row_vector
+
+
+
+
+
+def generate_column_vector(array_1d):
+    '''
+    generate an 2d column vector from 1d array
+    
+    Arguments:
+    array_1d --------   shape = (length,)
+
+    
+    Returns:
+    column_vector --       shape = (length, 1)
+    '''
+    array_length = len(array_1d)
+    column_vector = array_1d
+    
+    column_vector = column_vector.reshape(array_length, 1)
+    return column_vector
+
+
+    
+def d_fc_weights():
+    pass
+
+def d_fc_thresholds():
+    pass
+
+def d_l2_filter_pile():
+    pass
+
+def d_l2_thresholds():
+    pass
+
+def d_l1_filter_pile():
+    pass
+
+def d_l1_thresholds():
+    pass
     
     
     
