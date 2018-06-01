@@ -3,10 +3,19 @@
 This repo builds a multi-layer convolutional neural network with numpy, and without any deep learning tools, including TF, Keras, etc.
 
 ## About my CNN
-* input -> 1<sup>th</sup> conv layer -> 2<sup>nd</sup> conv layer 2 -> fully connect layer -> output label
+* Network structure:
+    * input -> 1<sup>th</sup> conv layer -> 2<sup>nd</sup> conv layer -> fully connect layer -> output label
+* Details of each layer:
     * input image size: `50 by 50`
-    * filter pile of 1<sup>th</sup> convolutional layer: 6 filters, size of each = `11 by 11`
-    * filter pile of 2<sup>nd</sup> convolutional layer: 12 filters, size of each = `5 by 5`
+    * filter pile of 1<sup>th</sup> convolutional layer: `6` filters, size of each = `11 by 11`
+    * threshold pile after 1<sup>th</sup> convolutional layer: `6` threshold arrays, size of each = `(50-11+1 =) 40 by 40`, each array has all equal values
+    * output of 1<sup>th</sup> convolutional layer: `6` images, size of each = `20 by 20`   
+    
+    * filter pile of 2<sup>nd</sup> convolutional layer: `12` filters, size of each = `5 by 5`
+    * threshold pile after 2<sup>nd</sup> convolutional layer: `12` threshold arrays, size of each = `(20-5+1 =) 16 by 16`, each array has all equal values
+    * output of 2<sup>nd</sup> convolutional layer: `12` images, size of each = `8 by 8`
+    * column-wise vectorization followed by concatenation  
+    
     * input array of fully conncect layer: length = `12 * 8 * 8 = 768`
     * weights array of fully connect layer: `2 * 768`
     * final output: `1 * 2` array
