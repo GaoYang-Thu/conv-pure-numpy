@@ -258,6 +258,22 @@ def sigmoid(x):
 
 
 
+def vectorize_column(img_single):
+    '''
+    vectorize a single img to an array in column wise
+    
+    Arguments:
+    img_single -- a 2d array
+    
+    Returns:
+    v_result -- an 1d array
+    '''
+    
+    v_result = np.concatenate(img_single.T)
+    return v_result
+
+
+
 def vector_and_concat(img_pile):
     '''
     1,vectorize every img in the pile into an 1d array
@@ -279,13 +295,13 @@ def vector_and_concat(img_pile):
     (img_num, img_size_h_cov, img_size_w_cov) = img_pile.shape
     
     # create a 2d array img_array
-    # then store img_array of each image in each row
-    img_array_2d = np.zeros((img_num, img_size_h_cov * img_size_w_cov))
+    # then store img_array of each image in each column
+    img_array_2d = np.zeros((img_size_h_cov * img_size_w_cov, img_num))
     
     for img_index in range(img_num):
-        img_array_2d[img_index] = np.concatenate(img_pile[img_index,:,:])
+        img_array_2d[:,img_index] = vectorize_column(img_pile[img_index,:,:])
     
-    vc_result = np.concatenate(img_array_2d)
+    vc_result = vectorize_column(img_array_2d)
     
     return vc_result
 

@@ -5,7 +5,7 @@ Created on Tue May 29 15:03:47 2018
 @author: YangGao
 """
 import numpy as np
-from filter_generator_defs import filter_pile_generator, fully_connect_weights
+from filter_generator_defs import filter_pile_generator, fully_connect_weights, threshold_generator
 
 '''
 PATH
@@ -36,3 +36,10 @@ L2_FILTER = filter_pile_generator(12,5)
 
 FULLY_CONNECT_WEIGHTS = fully_connect_weights(2, 8*8*12)
 
+# set thresholds for each convolution layer according to its output array
+
+L1_THRESHOLDS = threshold_generator(6,20)
+
+L2_THRESHOLDS = threshold_generator(12,16)
+
+FULLY_CONNECT_THRESHOLDS = np.random.randn(FULLY_CONNECT_WEIGHTS.shape[0])

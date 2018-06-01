@@ -47,7 +47,29 @@ def fully_connect_weights(final_dim, array_length):
     
     return fc_weights
     
+def threshold_generator(threshold_num, filter_size):
+    '''
+    generate thresholds for each convolution layer
     
+    
+    Arguments:
+    threshold_number
+    filter_size
+    
+    Returns:
+    threshold array, length = threshold_number
+    '''
+    
+    threshold_array_shape = (threshold_num, filter_size, filter_size)
+    
+    threshold_array = np.zeros(threshold_array_shape)
+    
+    for threshold_index in range(threshold_num):
+        threshold_array[threshold_index] += np.random.randint(0,10 + 1)
+    
+    print('the thresholds are generated.')
+    
+    return threshold_array
     
     
     

@@ -40,16 +40,22 @@ if __name__ == '__main__':
     
     '''real convolution network'''
     
-    # data
+    ''' data '''
     training_data, validating_data = create_train_data()
     testing_data = process_test_data()
     
-    # train
+    ''' train '''
     
     # initialize parameters
+        # paramters for cnn
     filter_pile_l1 = cf.L1_FILTER
     filter_pile_l2 = cf.L2_FILTER
     fc_weights = cf.FULLY_CONNECT_WEIGHTS
+    l1_thresholds = cf.L1_THRESHOLDS
+    l2_thresholds = cf.L2_THRESHOLDS
+    fc_thresholds = cf.FULLY_CONNECT_THRESHOLDS
+    
+        # parameters for training and testing
     train_error = np.zeros(training_data.shape[0])
     epoch_num = cf.EPOCH_NUM
     
@@ -63,10 +69,10 @@ if __name__ == '__main__':
             img_true_label = training_data[img_index][1]
             
             # feed the image forward through the cnn
-            l1_out = relu(avg_pooling(conv_single_pile(img,filter_pile_l1)))
-            l2_out = avg_pooling(relu(conv_pile_pile(l1_out,filter_pile_l2)))
-            final_label_raw = np.dot(fc_weights,vector_and_concat(l2_out))
-            final_label = relu(final_label_raw)
+            l1_out = sigmoid(avg_pooling(conv_single_pile(img,filter_pile_l1)) + l1_thresholds)
+            l2_out = avg_pooling(sigmoid(conv_pile_pile(l1_out,filter_pile_l2) + l2_thresholds))
+            final_label_raw = np.dot(fc_weights,vector_and_concat(l2_out)) + fc_thresholds
+            final_label = sigmoid(final_label_raw)
             train_error[img_index] = calculate_loss(img_true_label, final_label)
             
             if img_index %20 == 0:
