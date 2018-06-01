@@ -7,10 +7,7 @@ Created on Wed May 30 12:23:01 2018
 
 import numpy as np
 from scipy import signal
-import sys
 import config_cov as cf
-
-filter_1 = cf.L1_FILTER
 
 
 def conv2d(img_single, filter_single):
@@ -58,41 +55,7 @@ def conv2d(img_single, filter_single):
     r1 - r3 is not 0, but the difference is fairly small to pass the 'almost same' array test
     '''
     
-def conv2d_backward(d_result_single, cache_single):
-    '''
-    backward of 2d convolution of a single image and a single filter
-    
-    Arguments:
-    d_result_single -- gradient of the loss with respect to the output of conv2d
-                       shape = (img_size_h_cov, img_size_w_cov)
-    cache ------------ output of conv2d()
-    
-    Returns:
-    d_img_single ----- gradient of the loss with respect to the input of conv2d, 
-                    shape = (img_size_h, img_size_w)
-    d_filter_single -- gradient of the loss with respect to the filter of conv2d, 
-                    shape = (filter_size, filter_size)
-    '''
-    
-    (img_single, filter_single) = cache_single
-    
-    (img_size_h, img_size_w) = img_single.shape
-    (filter_size, filter_size) = filter_single.shape
-    (img_size_h_cov, img_size_w_cov) = d_result_single.shape
-    
-    d_img_single = np.zeros(img_single.shape)
-    d_filter_single = np.zeros(filter_single.shape)
-    
-    for h in range(img_size_h_cov):
-        for w in range(img_size_w_cov):
-            
-            d_img_single[h:h+filter_size, w:w+filter_size] += filter_single * d_result_single[h,w]
-            
-            d_filter_single_raw = img_single[h:h+filter_size, w:w+filter_size] * d_result_single[h,w]
-            # flip back
-            d_filter_single += np.fliplr(np.flipud(d_filter_single_raw))
-    
-    return d_img_single, d_filter_single
+
     
     
 
@@ -253,8 +216,12 @@ def relu(feature_map_pile):
 
 
 
+
 def sigmoid(x):
     return 1. / (1 + np.exp(-x))
+
+
+
 
 
 
@@ -271,6 +238,8 @@ def vectorize_column(img_single):
     
     v_result = np.concatenate(img_single.T)
     return v_result
+
+
 
 
 
@@ -307,6 +276,8 @@ def vector_and_concat(img_pile):
 
 
 
+
+
 def calculate_loss(true_label, output_label):
     
     if len(true_label) != len(output_label):
@@ -317,7 +288,45 @@ def calculate_loss(true_label, output_label):
     return loss_num
     
     
+
+
+
+
+def conv2d_backward(d_result_single, cache_single):
+    '''
+    backward of 2d convolution of a single image and a single filter
     
+    Arguments:
+    d_result_single -- gradient of the loss with respect to the output of conv2d
+                       shape = (img_size_h_cov, img_size_w_cov)
+    cache ------------ output of conv2d()
+    
+    Returns:
+    d_img_single ----- gradient of the loss with respect to the input of conv2d, 
+                    shape = (img_size_h, img_size_w)
+    d_filter_single -- gradient of the loss with respect to the filter of conv2d, 
+                    shape = (filter_size, filter_size)
+    '''
+    
+    (img_single, filter_single) = cache_single
+    
+    (img_size_h, img_size_w) = img_single.shape
+    (filter_size, filter_size) = filter_single.shape
+    (img_size_h_cov, img_size_w_cov) = d_result_single.shape
+    
+    d_img_single = np.zeros(img_single.shape)
+    d_filter_single = np.zeros(filter_single.shape)
+    
+    for h in range(img_size_h_cov):
+        for w in range(img_size_w_cov):
+            
+            d_img_single[h:h+filter_size, w:w+filter_size] += filter_single * d_result_single[h,w]
+            
+            d_filter_single_raw = img_single[h:h+filter_size, w:w+filter_size] * d_result_single[h,w]
+            # flip back
+            d_filter_single += np.fliplr(np.flipud(d_filter_single_raw))
+    
+    return d_img_single, d_filter_single
     
     
     
