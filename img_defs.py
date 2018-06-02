@@ -20,6 +20,9 @@ img_size = cf.IMG_SIZE
 reload_raw = cf.RELOAD_RAW_DATA # reload or not??
 val_fraction = cf.VAL_FRACTION
 
+
+
+
 def label_img(img_name):
     '''convert file names (cat.xx.jpg and dog.xx.jpg) to [1,0] and [0,1], respectively'''
     word_label = img_name.split('.')[0]
@@ -27,7 +30,9 @@ def label_img(img_name):
         return [1,0]
     elif word_label == 'dog':
         return [0,1]
-    
+
+
+
 def create_train_data():
     '''
     read images in training dataset directory,

@@ -17,11 +17,11 @@ def filter_pile_generator_l1(filter_num, filter_size):
     
     
     Arguments:
-    filter_num --- number of filters in the pile
-    filter_size -- size of each filter in the pile
+        filter_num --- number of filters in the pile
+        filter_size -- size of each filter in the pile
     
     Returns:
-    filter_pile -- a pile of filters
+        filter_pile -- a pile of filters
     '''
     
     total_length = filter_num * filter_size * filter_size
@@ -53,12 +53,12 @@ def filter_pile_generator_l2(pile_num, filter_num, filter_size):
     
     
     Arguments:
-    pile_num
-    filter_num --- number of filters in the pile
-    filter_size -- size of each filter in the pile
+        pile_num
+        filter_num --- number of filters in the pile
+        filter_size -- size of each filter in the pile
     
     Returns:
-    filter_pile -- a pile of filters, shape = (pile_num, l2_input_num, filter_size, filter_size) 4d array
+        filter_pile -- a pile of filters, shape = (pile_num, l2_input_num, filter_size, filter_size) 4d array
     '''
     
     total_length = pile_num * filter_num * filter_size * filter_size
@@ -81,11 +81,11 @@ def fully_connect_weights(final_dim, array_length):
     generate weights for fully connection layer
     
     Arguments:
-    final_dim --- dimension of the final output array (eg. final_dim = 2 in cats vs dogs)
-    array_length -- length of the input array of fully connection layer
+        final_dim --- dimension of the final output array (eg. final_dim = 2 in cats vs dogs)
+        array_length -- length of the input array of fully connection layer
     
     Returns:
-    fc_weights -- a 2d array of weights for fully connection layer
+        fc_weights -- a 2d array of weights for fully connection layer
     '''
     
     fc_weights_shape = (final_dim, array_length)
@@ -110,20 +110,17 @@ def fully_connect_weights(final_dim, array_length):
 
 
 
-
-
-
 def threshold_generator(threshold_num, filter_size):
     '''
     generate thresholds for each convolution layer
     
     
     Arguments:
-    threshold_number
-    filter_size
+        threshold_num
+        filter_size
     
     Returns:
-    threshold array, length = threshold_number
+        threshold array -- length = threshold_number
     '''
     
     threshold_array_shape = (threshold_num, filter_size, filter_size)
