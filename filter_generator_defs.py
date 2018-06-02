@@ -5,7 +5,7 @@ Created on Thu May 31 18:16:37 2018
 @author: YangGao
 """
 import numpy as np
-
+import config_cov as cf
 
 
 
@@ -24,12 +24,17 @@ def filter_pile_generator_l1(filter_num, filter_size):
     filter_pile -- a pile of filters
     '''
     
+    total_length = filter_num * filter_size * filter_size
     filter_pile_shape = (filter_num, filter_size, filter_size)
     
     filter_pile = np.zeros(filter_pile_shape)
     
-    for filter_index in range(filter_num):
-        filter_pile[filter_index,:,:] = np.random.rand(filter_size,filter_size)
+    low = - np.sqrt(filter_num/((1 + filter_num) * filter_size**2))
+    
+    filter_pile = np.random.uniform(low=low, high=-low, size = total_length).reshape(filter_pile_shape)
+
+#    for filter_index in range(filter_num):
+#        filter_pile[filter_index,:,:] = np.random.rand(filter_size,filter_size)
     
     print('the filter pile for layer 1 is generated.')
     return filter_pile
@@ -83,7 +88,14 @@ def fully_connect_weights(final_dim, array_length):
     fc_weights -- a 2d array of weights for fully connection layer
     '''
     
-    fc_weights = np.random.randn(final_dim, array_length)
+    fc_weights_shape = (final_dim, array_length)
+    total_length = final_dim * array_length
+    filter_num = cf.L1_FILTER_NUM
+    
+    low = - np.sqrt(filter_num/(final_dim + array_length))
+    
+    fc_weights = np.random.uniform(low = low, high = -low, size = total_length).reshape(fc_weights_shape)
+    
     print('the fc weights are generated.')
     
     return fc_weights
