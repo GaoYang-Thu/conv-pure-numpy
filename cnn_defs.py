@@ -278,6 +278,7 @@ def vector_and_concat(img_pile):
 
 
 
+
 def calculate_loss(true_label, output_label):
     
     if len(true_label) != len(output_label):
@@ -287,46 +288,6 @@ def calculate_loss(true_label, output_label):
     loss_num = 0.5 * np.dot(error_array.T, error_array)
     return loss_num
     
-    
-
-
-
-
-def conv2d_backward(d_result_single, cache_single):
-    '''
-    backward of 2d convolution of a single image and a single filter
-    
-    Arguments:
-    d_result_single -- gradient of the loss with respect to the output of conv2d
-                       shape = (img_size_h_cov, img_size_w_cov)
-    cache ------------ output of conv2d()
-    
-    Returns:
-    d_img_single ----- gradient of the loss with respect to the input of conv2d, 
-                    shape = (img_size_h, img_size_w)
-    d_filter_single -- gradient of the loss with respect to the filter of conv2d, 
-                    shape = (filter_size, filter_size)
-    '''
-    
-    (img_single, filter_single) = cache_single
-    
-    (img_size_h, img_size_w) = img_single.shape
-    (filter_size, filter_size) = filter_single.shape
-    (img_size_h_cov, img_size_w_cov) = d_result_single.shape
-    
-    d_img_single = np.zeros(img_single.shape)
-    d_filter_single = np.zeros(filter_single.shape)
-    
-    for h in range(img_size_h_cov):
-        for w in range(img_size_w_cov):
-            
-            d_img_single[h:h+filter_size, w:w+filter_size] += filter_single * d_result_single[h,w]
-            
-            d_filter_single_raw = img_single[h:h+filter_size, w:w+filter_size] * d_result_single[h,w]
-            # flip back
-            d_filter_single += np.fliplr(np.flipud(d_filter_single_raw))
-    
-    return d_img_single, d_filter_single
     
 
 
@@ -371,7 +332,115 @@ def generate_column_vector(array_1d):
     return column_vector
 
 
+
+
+
+
+def reverse_vc(column_vector):
+    '''
+    1,split the column vector into sub vectors
+    2,regroup each subvector into a 2d array
     
+    Arguments:
+    column_vector -- a column vector
+                 shape = (img_num * img_size_h_cov * img_size_w_cov)
+
+    Intermediate result:
+    img_array -- a 2d array pile, each img is transposed
+                 shape = (img_num, img_size_w_cov * img_size_h_cov)
+    
+    Returns:
+    reverse_vc_result -- a pile of 2d arrays,
+                 shape = (img_num, img_size_h_cov, img_size_w_cov)
+    
+    '''
+    img_num = cf.L2_FILTER_NUM
+#    img_size = 8
+    img_size = cf.L2_FILTER_OUTPUT_SIZE_AFTER_POOLING
+
+    img_array = column_vector.reshape(img_num, img_size, img_size)
+    reverse_vc_result = np.zeros(img_array.shape)
+    
+    for img_index in range(img_array.shape[0]):
+        reverse_vc_result[img_index,:,:] = img_array[img_index,:,:].T
+    
+    print('reverse v&c is done.')
+    return reverse_vc_result
+
+
+
+def upsampling(img_pile):
+    '''
+    unsample the img_pile, ratio = 2 in each axis
+    
+    Arguments:
+    img_pile --------   shape = (img_num, size_after_pooling, size_after_pooling)
+
+    
+    Returns:
+    img_pile_up -----   upsampled img pile.
+                        shape = (img_num, size_after_pooling * 2, size_after_pooling * 2)
+    '''
+    img_num = cf.L2_FILTER_NUM
+    size_after_pooling = int(cf.L2_FILTER_OUTPUT_SIZE_BEFORE_POOLING)
+    img_pile_up_shape = (img_num, size_after_pooling, size_after_pooling)
+    img_pile_up = np.zeros(img_pile_up_shape)
+    
+    for img_index in range(img_num):
+        img_single_up = img_pile_up[img_index,:,:]
+        img_single_pooled = img_pile[img_index,:,:]
+        for i in np.ndindex(img_single_up.shape):
+            index_pooled = (int(np.floor(0.5*i[0])), int(np.floor(0.5*i[1])))
+#            print(i, index_pooled)
+            img_single_up[i] = 0.25 * img_single_pooled[index_pooled]
+        
+        
+    return img_pile_up
+    
+
+
+def conv2d_backward(d_result_single, cache_single):
+    '''
+    backward of 2d convolution of a single image and a single filter
+    
+    Arguments:
+    d_result_single -- gradient of the loss with respect to the output of conv2d
+                       shape = (img_size_h_cov, img_size_w_cov)
+    cache ------------ output of conv2d()
+    
+    Returns:
+    d_img_single ----- gradient of the loss with respect to the input of conv2d, 
+                    shape = (img_size_h, img_size_w)
+    d_filter_single -- gradient of the loss with respect to the filter of conv2d, 
+                    shape = (filter_size, filter_size)
+    '''
+    
+    (img_single, filter_single) = cache_single
+    
+    (img_size_h, img_size_w) = img_single.shape
+    (filter_size, filter_size) = filter_single.shape
+    (img_size_h_cov, img_size_w_cov) = d_result_single.shape
+    
+    d_img_single = np.zeros(img_single.shape)
+    d_filter_single = np.zeros(filter_single.shape)
+    
+    for h in range(img_size_h_cov):
+        for w in range(img_size_w_cov):
+            
+            d_img_single[h:h+filter_size, w:w+filter_size] += filter_single * d_result_single[h,w]
+            
+            d_filter_single_raw = img_single[h:h+filter_size, w:w+filter_size] * d_result_single[h,w]
+            # flip back
+            d_filter_single += np.fliplr(np.flipud(d_filter_single_raw))
+    
+    return d_img_single, d_filter_single
+    
+
+
+
+
+
+
 def d_fc_weights():
     pass
 

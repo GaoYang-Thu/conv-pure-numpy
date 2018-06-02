@@ -25,21 +25,34 @@ RELOAD_RAW_DATA = False # control whether to reload data from raw images
 IMG_SIZE = 50
 POOLING_SIZE = 2
 POOLING_STRIDE = 2
+OUTPUT_LABLE_NUM = 2
+
 VAL_FRACTION = 0.2
 EPOCH_NUM = 1
 
-# set filter_size of layer 1 and 2 according to input img size
+# layer 1 filter pile and thresholds
 
-L1_FILTER = filter_pile_generator(6,11)
+L1_FILTER_NUM = 6
+L1_FILTER_SIZE = 11
+L1_FILTER = filter_pile_generator(L1_FILTER_NUM, L1_FILTER_SIZE)
+L1_FILTER_OUTPUT_SIZE_BEFORE_POOLING = int(IMG_SIZE - L1_FILTER_SIZE + 1)
+L1_THRESHOLDS = threshold_generator(L1_FILTER_NUM, L1_FILTER_OUTPUT_SIZE_BEFORE_POOLING)
+L1_FILTER_OUTPUT_SIZE_AFTER_POOLING = int(L1_FILTER_OUTPUT_SIZE_BEFORE_POOLING / 2)  # AFTER POOLING
 
-L2_FILTER = filter_pile_generator(12,5)
 
-FULLY_CONNECT_WEIGHTS = fully_connect_weights(2, 8*8*12)
+# layer 2 filter pile and thresholds
 
-# set thresholds for each convolution layer according to its output array
+L2_FILTER_NUM = 12
+L2_FILTER_SIZE = 5
+L2_FILTER = filter_pile_generator(L2_FILTER_NUM, L2_FILTER_SIZE)
+L2_FILTER_OUTPUT_SIZE_BEFORE_POOLING = int(L1_FILTER_OUTPUT_SIZE_AFTER_POOLING - L2_FILTER_SIZE + 1)
+L2_THRESHOLDS = threshold_generator(L2_FILTER_NUM, L2_FILTER_OUTPUT_SIZE_BEFORE_POOLING)
+L2_FILTER_OUTPUT_SIZE_AFTER_POOLING = int(L2_FILTER_OUTPUT_SIZE_BEFORE_POOLING / 2) # AFTER POOLING
 
-L1_THRESHOLDS = threshold_generator(6,20)
 
-L2_THRESHOLDS = threshold_generator(12,16)
+# fully connect layer weights and thresholds
 
-FULLY_CONNECT_THRESHOLDS = np.random.randn(FULLY_CONNECT_WEIGHTS.shape[0])
+FULLY_CONNECT_ARRAY_LEN = L2_FILTER_OUTPUT_SIZE_AFTER_POOLING * L2_FILTER_OUTPUT_SIZE_AFTER_POOLING * L2_FILTER_NUM
+FULLY_CONNECT_WEIGHTS = fully_connect_weights(OUTPUT_LABLE_NUM, FULLY_CONNECT_ARRAY_LEN)
+
+FULLY_CONNECT_THRESHOLDS = np.random.randn(OUTPUT_LABLE_NUM)
