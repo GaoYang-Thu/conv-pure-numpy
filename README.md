@@ -28,6 +28,7 @@ This repo builds a multi-layer convolutional neural network with numpy, and with
     3. achieved backprobagation of the entire convolutional network!! :sunglasses::clap:
 * Next: 
     1. visualize all feature maps.
+    2. carry on cross validations.
     
 ## *References*
 1. [仅用numpy完成卷积神经网络](https://m.aliyun.com/yunqi/articles/585741)
