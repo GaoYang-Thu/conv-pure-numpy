@@ -10,6 +10,7 @@ from cnn_defs import conv2d, conv_single_pile, conv_pile_group, avg_pooling, rel
 
 import config_cov as cf
 import cv2
+import matplotlib.pyplot as plt
 
 
 
