@@ -5,7 +5,7 @@ Created on Tue May 29 15:03:47 2018
 @author: YangGao
 """
 import numpy as np
-from filter_generator_defs import filter_pile_generator, fully_connect_weights, threshold_generator
+from filter_generator_defs import filter_pile_generator_l1, fully_connect_weights, threshold_generator, filter_pile_generator_l2
 
 '''
 PATH
@@ -34,7 +34,7 @@ EPOCH_NUM = 1
 
 L1_FILTER_NUM = 6
 L1_FILTER_SIZE = 11
-L1_FILTER = filter_pile_generator(L1_FILTER_NUM, L1_FILTER_SIZE)
+L1_FILTER = filter_pile_generator_l1(L1_FILTER_NUM, L1_FILTER_SIZE)
 L1_FILTER_OUTPUT_SIZE_BEFORE_POOLING = int(IMG_SIZE - L1_FILTER_SIZE + 1)
 L1_THRESHOLDS = threshold_generator(L1_FILTER_NUM, L1_FILTER_OUTPUT_SIZE_BEFORE_POOLING)
 L1_FILTER_OUTPUT_SIZE_AFTER_POOLING = int(L1_FILTER_OUTPUT_SIZE_BEFORE_POOLING / 2)  # AFTER POOLING
@@ -44,7 +44,7 @@ L1_FILTER_OUTPUT_SIZE_AFTER_POOLING = int(L1_FILTER_OUTPUT_SIZE_BEFORE_POOLING /
 
 L2_FILTER_NUM = 12
 L2_FILTER_SIZE = 5
-L2_FILTER = filter_pile_generator(L2_FILTER_NUM, L2_FILTER_SIZE)
+L2_FILTER = filter_pile_generator_l2(L1_FILTER_NUM, L2_FILTER_NUM, L2_FILTER_SIZE)
 L2_FILTER_OUTPUT_SIZE_BEFORE_POOLING = int(L1_FILTER_OUTPUT_SIZE_AFTER_POOLING - L2_FILTER_SIZE + 1)
 L2_THRESHOLDS = threshold_generator(L2_FILTER_NUM, L2_FILTER_OUTPUT_SIZE_BEFORE_POOLING)
 L2_FILTER_OUTPUT_SIZE_AFTER_POOLING = int(L2_FILTER_OUTPUT_SIZE_BEFORE_POOLING / 2) # AFTER POOLING

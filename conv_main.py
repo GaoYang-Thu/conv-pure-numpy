@@ -6,7 +6,7 @@ Created on Wed May 30 09:59:26 2018
 """
 import numpy as np
 from img_defs import create_train_data, process_test_data
-from cnn_defs import conv_single_pile, conv_pile_pile, avg_pooling, relu, vector_and_concat, sigmoid, calculate_loss, generate_row_vector, generate_column_vector, reverse_vc, upsampling
+from cnn_defs import conv_single_pile, conv_pile_group, avg_pooling, relu, vector_and_concat, sigmoid, calculate_loss, generate_row_vector, generate_column_vector, reverse_vc, upsampling
 
 import config_cov as cf
 import cv2
@@ -73,7 +73,7 @@ if __name__ == '__main__':
             
             # feed the image forward through the cnn
             l1_out = sigmoid(avg_pooling(conv_single_pile(img,filter_pile_l1) + l1_thresholds))
-            l2_out = avg_pooling(sigmoid(conv_pile_pile(l1_out,filter_pile_l2) + l2_thresholds))
+            l2_out = avg_pooling(sigmoid(conv_pile_group(l1_out,filter_pile_l2) + l2_thresholds))
             fc_input_array = vector_and_concat(l2_out)
             fc_input_array = generate_column_vector(fc_input_array) # convert it to a column vector
 

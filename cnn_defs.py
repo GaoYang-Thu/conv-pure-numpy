@@ -105,23 +105,24 @@ def conv_single_pile(img_single, filter_pile):
 
 
 
-def conv_pile_pile(img_pile, filter_pile):
+def conv_pile_group(img_pile, filter_group):
     '''
-    2d convolution of a pile of gray images and a pile of convolution filters
+    2d convolution of a pile of gray images and a group of piles of convolution filters
     
     Arguments:
-    img_pile ----- a pile of images to conv, 
+    img_pile ----- a pile of images to conv, 3d array
                    shape = (img_num, img_size_h, img_size_w)
-    filter_pile -- a pile of filters, 
-                   shape = (filter_num, filter_size, filter_size)
+    filter_group -- a group of piles of filters, 4d array
+                   shape = (pile_num, filter_num, filter_size, filter_size)
     
     Returns:
     feature_map_pile -- a plie of convolution results,
                         shape = (filter_num, img_size_h_cov, img_size_w_cov)
         
     '''
-            
-    (filter_num, filter_size, filter_size) = filter_pile.shape
+    
+    (pile_num, filter_num, filter_size, filter_size) = filter_group.shape
+    
     (img_num, img_size_h, img_size_w) = img_pile.shape
 
     img_size_h_cov = img_size_h - filter_size + 1
@@ -133,11 +134,20 @@ def conv_pile_pile(img_pile, filter_pile):
     
     for img_index in range(img_num):
         # print('computing image number: {}...'.format(img_index+1))
+        
+        # the single image for convolution
         img_single = img_pile[img_index,:,:]
+        
+        # the filter pile for convolution
+        filter_pile = filter_group[img_index,:,:,:]
+        
+        # recursively add convolution results
         feature_map_pile += conv_single_pile(img_single, filter_pile)
+        
         # print('computing image number: {} is completed.\n'.format(img_index+1))
 
     return feature_map_pile
+
 
 
 
@@ -369,6 +379,9 @@ def reverse_vc(column_vector):
 
 
 
+
+
+
 def upsampling(img_pile):
     '''
     unsample the img_pile, ratio = 2 in each axis
@@ -396,7 +409,11 @@ def upsampling(img_pile):
         
         
     return img_pile_up
-    
+
+
+
+
+
 
 
 def conv2d_backward(d_result_single, cache_single):
