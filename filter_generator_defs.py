@@ -36,6 +36,8 @@ def filter_pile_generator_l1(filter_num, filter_size):
 #    for filter_index in range(filter_num):
 #        filter_pile[filter_index,:,:] = np.random.rand(filter_size,filter_size)
     
+    print('\n')
+    print('Building CNN......')
     print('the filter pile for layer 1 is generated.')
     return filter_pile
 
@@ -130,7 +132,7 @@ def threshold_generator(threshold_num, filter_size):
     for threshold_index in range(threshold_num):
         threshold_array[threshold_index] += np.random.randint(0,10 + 1)
     
-    print('the thresholds are generated.')
+    print('the thresholds for current layer are generated.')
     
     return threshold_array
     

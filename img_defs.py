@@ -18,7 +18,7 @@ train_dir = cf.TRAIN_PATH
 test_dir = cf.TEST_PATH
 img_size = cf.IMG_SIZE
 reload_raw = cf.RELOAD_RAW_DATA # reload or not??
-val_fraction = cf.VAL_FRACTION
+validating_fraction = cf.VALIDATING_FRACTION
 
 
 
@@ -41,14 +41,15 @@ def create_train_data():
     then formulate images and labels into a single array, trainging_data
     '''
     assert os.path.isdir(train_dir)
-    
+    print('\n')
+    print('Loading training data......')
     training_data_all = []
     
     # load all training data
     if not reload_raw:
         if os.path.exists('training_data_all.npy'):
             training_data_all = np.load('training_data_all.npy')
-            print('\n')
+            
             print('all training data loaded from .npy file')
     
     else:
@@ -62,14 +63,13 @@ def create_train_data():
             shuffle(training_data_all)
             np.save('training_data_all.npy',training_data_all)
     
-    training_validating_size = cf.TRAINING_VALIDATING_DATA_SIZE
-    training_validating_data = training_data_all[training_validating_size:]
+    training_validating_size = training_data_all.shape[0]
     
-    validation_data_size = int(val_fraction * training_validating_size)
-    validating_data = training_validating_data[-validation_data_size:]
+    validation_data_size = int(validating_fraction * training_validating_size)
+    validating_data = training_data_all[-validation_data_size:]
     
-    training_data_size = training_validating_size-validation_data_size
-    training_data = training_validating_data[training_data_size:]
+    training_data_size = training_validating_size - validation_data_size
+    training_data = training_data_all[training_data_size:]
     
     print('Training + Validating = {} data points'.format(training_validating_size))
     print('Training              = {} data points'.format(training_data_size))
@@ -91,6 +91,8 @@ def process_test_data():
     '''
     
     assert os.path.isdir(test_dir)
+    
+    print('Loading tesing data......')
     testing_data_all = []
     
     # load all tesing data
@@ -113,7 +115,7 @@ def process_test_data():
     
     testing_data_size = cf.TESTING_DATA_SIZE
     testing_data = testing_data_all[testing_data_size:]
-    print('Training = {} data points'.format(testing_data_size))
+    print('Testing = {} data points \n'.format(testing_data_size))
     
     return testing_data
 

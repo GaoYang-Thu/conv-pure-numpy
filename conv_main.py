@@ -65,6 +65,8 @@ if __name__ == '__main__':
     for i in range(epoch_num):
         
         # train()?
+        print('\n')
+        print('Training CNN......')
         
         for img_index in range(training_data.shape[0]):
             
@@ -171,7 +173,9 @@ if __name__ == '__main__':
             fc_weights         -=   d_fc_weights      * learning_rate
             fc_thresholds      -=   d_fc_thresholds   * learning_rate
             
+            # save parameters???
             
+        print('Training CNN is completed. \n')
         # train() is completed without errors
             
             
