@@ -5,7 +5,7 @@ Created on Wed May 30 09:59:26 2018
 @author: YangGao
 """
 import numpy as np
-from img_defs import create_train_data, process_test_data
+from img_defs import create_train_data_all, shuffle_and_create_validata_data, create_test_data_all
 from cnn_defs import conv2d, conv_single_pile, conv_pile_group, avg_pooling, relu, vector_and_concat, sigmoid, calculate_loss, generate_row_vector, generate_column_vector, reverse_vc, upsampling, paddle_zeros
 
 import config_cov as cf
@@ -43,8 +43,8 @@ if __name__ == '__main__':
     '''real convolution network'''
     
     ''' data '''
-    training_data, validating_data, training_data_size = create_train_data()
-    testing_data = process_test_data()
+    training_data_all = create_train_data_all()
+    testing_data = create_test_data_all()
     
     ''' train '''
     
@@ -58,11 +58,21 @@ if __name__ == '__main__':
     fc_thresholds = cf.FULLY_CONNECT_THRESHOLDS
     
         # parameters for training and testing
-    train_error = np.zeros(training_data.shape[0])
+    
     epoch_num = cf.EPOCH_NUM
     learning_rate = cf.LEARNING_RATE
 
     for epoch_index in range(epoch_num):
+        
+        # split tratining_data_all into 2 subsets: training data and validating data
+        
+        training_data, validating_data = shuffle_and_create_validata_data(training_data_all)
+        
+        training_data_size = training_data.shape[0]
+        train_error = np.zeros(training_data_size)
+        
+        validating_data_size = validating_data.shape[0]
+        validate_error = np.zeros(validating_data_size)
         
         # train()?
         print('\n')
@@ -71,6 +81,8 @@ if __name__ == '__main__':
         for img_index in range(training_data.shape[0]):
             
             '''forward throuth cnn'''
+            # summerize using a cnn_forward() funcion
+            
             img = training_data[img_index][0]
             img = img - np.mean(img)
             img = img / np.std(img)
@@ -101,6 +113,8 @@ if __name__ == '__main__':
             
             
             ''' backward probagation from loss function '''
+            # summerize using a cnn_backward() function
+            
             d_y = (img_true_label - final_label) * final_label * (1 - final_label)
             
             # d_fc_weights
@@ -181,9 +195,10 @@ if __name__ == '__main__':
             
             
             
-    # validate
-    for img_index in range(validating_data.shape[0]):
-        pass
+        # validate
+        for img_index in range(validating_data_size):
+            # feed each img in validating data through cnn, calculate loss and store it in validate_error
+            pass
     
     
     
