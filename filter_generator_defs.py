@@ -24,17 +24,16 @@ def filter_pile_generator_l1(filter_num, filter_size):
         filter_pile -- a pile of filters
     '''
     
-    total_length = filter_num * filter_size * filter_size
+    filter_length = filter_size ** 2
     filter_pile_shape = (filter_num, filter_size, filter_size)
     
     filter_pile = np.zeros(filter_pile_shape)
     
     low = - np.sqrt(filter_num/((1 + filter_num) * filter_size**2))
     
-    filter_pile = np.random.uniform(low=low, high=-low, size = total_length).reshape(filter_pile_shape)
-
-#    for filter_index in range(filter_num):
-#        filter_pile[filter_index,:,:] = np.random.rand(filter_size,filter_size)
+    for filter_index in range(filter_num):
+        filter_pile[filter_index,:,:] = np.random.uniform(low=low, high=-low, size = filter_length).reshape(filter_size, filter_size)
+    
     
     print('\n')
     print('Building CNN......')
@@ -62,13 +61,18 @@ def filter_pile_generator_l2(pile_num, filter_num, filter_size):
     Returns:
         filter_pile -- a pile of filters, shape = (pile_num, l2_input_num, filter_size, filter_size) 4d array
     '''
+    filter_length = filter_size ** 2
     
-    total_length = pile_num * filter_num * filter_size * filter_size
     filter_pile_shape = (pile_num, filter_num, filter_size, filter_size)
+    
+    filter_pile = np.zeros(filter_pile_shape)
+    
     low = - np.sqrt(pile_num/((pile_num + filter_num) * filter_size**2))
     
-    filter_pile = np.random.uniform(low=low, high=-low, size = total_length).reshape(filter_pile_shape)
-    
+    for pile_index in range(pile_num):
+        for filter_index in range(filter_num):
+            filter_pile[pile_index, filter_index,:,:] = np.random.uniform(low=low, high=-low, size = filter_length).reshape(filter_size,filter_size)
+            
     
     print('the filter piles for layer 2 is generated.')
     return filter_pile
@@ -129,8 +133,8 @@ def threshold_generator(threshold_num, filter_size):
     
     threshold_array = np.zeros(threshold_array_shape)
     
-    for threshold_index in range(threshold_num):
-        threshold_array[threshold_index] += np.random.randint(0,10 + 1)
+#    for threshold_index in range(threshold_num):
+#        threshold_array[threshold_index] += np.random.randint(0,10 + 1)
     
     print('the thresholds for current layer are generated.')
     

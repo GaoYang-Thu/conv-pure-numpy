@@ -62,7 +62,7 @@ if __name__ == '__main__':
     epoch_num = cf.EPOCH_NUM
     learning_rate = cf.LEARNING_RATE
 
-    for i in range(epoch_num):
+    for epoch_index in range(epoch_num):
         
         # train()?
         print('\n')
@@ -95,8 +95,8 @@ if __name__ == '__main__':
             
             train_error[img_index] = calculate_loss(img_true_label, final_label)
             
-            if img_index %10 == 0:
-                print('current index = {} / total training_num = {}'.format(img_index, training_data_size))
+            if (img_index+1) %10 == 0:
+                print('Current index = {} / Total training_num = {} / Epoch index = {}'.format(img_index+1, training_data_size, epoch_index+1))
             
             
             
