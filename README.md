@@ -26,6 +26,7 @@ This repo builds a multi-layer convolutional neural network with numpy, and with
     1. images could pass through multi-convolutional layers and result in feature maps (*they are just images, actually*).
     2. start from these feature maps, build full connected layers, and reach final output (*the output array has 2 numbers: \[a,b]*).
     3. achieved backprobagation of the entire convolutional network!! :sunglasses::clap:
+    4. output training data size, validation data size, testing data size and image size at the data generation process, to make data profiles clear
 * Next: 
     1. visualize all feature maps.
     2. carry on cross validations.
