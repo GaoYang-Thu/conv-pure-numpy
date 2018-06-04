@@ -16,7 +16,7 @@ TEST_PATH = 'K://Documents//Projects//machine-learning-basic//conv-pure-numpy//d
 '''
 HYPERPARAMETERS
 '''
-LEARNING_RATE = 0.1
+LEARNING_RATE = 0.5
 
 RELOAD_RAW_DATA = False # control whether to reload data from raw images
 # True : Reload from raw images
@@ -27,6 +27,8 @@ POOLING_SIZE = 2
 POOLING_STRIDE = 2
 OUTPUT_LABLE_NUM = 2
 
+TRAINING_VALIDATING_DATA_SIZE = 5000
+TESTING_DATA_SIZE = 3000
 VAL_FRACTION = 0.2
 EPOCH_NUM = 1
 

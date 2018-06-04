@@ -42,11 +42,14 @@ def create_train_data():
     '''
     assert os.path.isdir(train_dir)
     
-    training_data = []
+    training_data_all = []
+    
+    # load all training data
     if not reload_raw:
-        if os.path.exists('training_data.npy'):
-            training_data = np.load('training_data.npy')
-            print('training data loaded from .npy file')
+        if os.path.exists('training_data_all.npy'):
+            training_data_all = np.load('training_data_all.npy')
+            print('\n')
+            print('all training data loaded from .npy file')
     
     else:
         print('creating training data...')
@@ -55,17 +58,26 @@ def create_train_data():
             img_path = os.path.join(train_dir,img_name)
             image = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
             image = cv2.resize(image, (img_size,img_size))
-            training_data.append([np.array(image),np.array(label)])
-            shuffle(training_data)
-            np.save('training_data.npy',training_data)
-            
-    training_data_size = training_data.shape[0]
-    validation_data_size = int(val_fraction * training_data_size)
-    validating_data = training_data[-validation_data_size:]
-    training_data = training_data[:training_data_size-validation_data_size]
-    print('validating data is created.')
+            training_data_all.append([np.array(image),np.array(label)])
+            shuffle(training_data_all)
+            np.save('training_data_all.npy',training_data_all)
     
-    return training_data, validating_data
+    training_validating_size = cf.TRAINING_VALIDATING_DATA_SIZE
+    training_validating_data = training_data_all[training_validating_size:]
+    
+    validation_data_size = int(val_fraction * training_validating_size)
+    validating_data = training_validating_data[-validation_data_size:]
+    
+    training_data_size = training_validating_size-validation_data_size
+    training_data = training_validating_data[training_data_size:]
+    
+    print('Training + Validating = {} data points'.format(training_validating_size))
+    print('Training              = {} data points'.format(training_data_size))
+    print('Validating            = {} data points'.format(validation_data_size))
+    
+    print('image size = {} * {} \n'.format(img_size, img_size))
+    
+    return training_data, validating_data, training_data_size
 
 
 
@@ -79,12 +91,13 @@ def process_test_data():
     '''
     
     assert os.path.isdir(test_dir)
-    testing_data = []
+    testing_data_all = []
     
+    # load all tesing data
     if not reload_raw:
-        if os.path.exists('testing_data.npy'):
-            testing_data = np.load('testing_data.npy')
-            print('testing data loaded from .npy file\n')
+        if os.path.exists('testing_data_all.npy'):
+            testing_data = np.load('testing_data_all.npy')
+            print('all testing data loaded from .npy file')
         
     else:
 
@@ -96,5 +109,19 @@ def process_test_data():
             image = cv2.resize(image, (img_size,img_size))
             testing_data.append([np.array(image),img_num])
             shuffle(testing_data)
-            np.save('testing_data.npy',testing_data)
+            np.save('testing_data_all.npy',testing_data)
+    
+    testing_data_size = cf.TESTING_DATA_SIZE
+    testing_data = testing_data_all[testing_data_size:]
+    print('Training = {} data points'.format(testing_data_size))
+    
     return testing_data
+
+
+
+
+
+
+
+
+

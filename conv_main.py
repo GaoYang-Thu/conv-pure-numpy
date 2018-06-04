@@ -43,15 +43,15 @@ if __name__ == '__main__':
     '''real convolution network'''
     
     ''' data '''
-    training_data, validating_data = create_train_data()
+    training_data, validating_data, training_data_size = create_train_data()
     testing_data = process_test_data()
     
     ''' train '''
     
     # initialize parameters
         # paramters for cnn
-    filter_pile_l1 = cf.L1_FILTER
-    filter_group_l2 = cf.L2_FILTER
+    l1_filter_pile = cf.L1_FILTER
+    l2_filter_group = cf.L2_FILTER
     fc_weights = cf.FULLY_CONNECT_WEIGHTS
     l1_thresholds = cf.L1_THRESHOLDS
     l2_thresholds = cf.L2_THRESHOLDS
@@ -76,24 +76,25 @@ if __name__ == '__main__':
             img_true_label = generate_column_vector(img_true_label) # convert it to a column vector
             
             # feed the image forward through the cnn
-            l1_output_before_pooling = sigmoid(conv_single_pile(img,filter_pile_l1) + l1_thresholds)
+            l1_output_before_pooling = sigmoid(conv_single_pile(img,l1_filter_pile) + l1_thresholds)
             l1_output = avg_pooling(l1_output_before_pooling)
             
             l2_input = l1_output
-            l2_output_before_activation = conv_pile_group(l2_input,filter_group_l2) + l2_thresholds
+            l2_output_before_activation = conv_pile_group(l2_input,l2_filter_group) + l2_thresholds
             l2_output_before_pooling = sigmoid(l2_output_before_activation)
             l2_output = avg_pooling(l2_output_before_pooling)
             fc_input_array = vector_and_concat(l2_output)
             fc_input_array = generate_column_vector(fc_input_array) # convert it to a column vector
-
-            final_label_raw = np.dot(fc_weights,fc_input_array).reshape(cf.OUTPUT_LABLE_NUM,) + fc_thresholds
+            
+            fc_thresholds = generate_column_vector(fc_thresholds)
+            final_label_raw = np.dot(fc_weights,fc_input_array) + fc_thresholds
             final_label = sigmoid(final_label_raw)
             final_label = generate_column_vector(final_label) # convert it to a column vector
             
             train_error[img_index] = calculate_loss(img_true_label, final_label)
             
             if img_index %10 == 0:
-                print('working on: image index: {}'.format(img_index))
+                print('current index = {} / total training_num = {}'.format(img_index, training_data_size))
             
             
             
@@ -136,7 +137,7 @@ if __name__ == '__main__':
                 for filter_index in range(filter_num_l2):
                     # get single arrays for convolution
                     d_l2_output_before_activation_single = d_l2_output_before_activation[filter_index,:,:]
-                    l2_filter_single = filter_group_l2[pile_index,filter_index,:,:]
+                    l2_filter_single = l2_filter_group[pile_index,filter_index,:,:]
                     # convolution
                     d_l1_output[pile_index,:,:] += conv2d(paddle_zeros(d_l2_output_before_activation_single), l2_filter_single)
             
@@ -163,12 +164,12 @@ if __name__ == '__main__':
                 
             
             ''' update all parameters!!!~ '''
-            d_l1_filter_pile     -=   d_l1_filter_pile  * learning_rate
-            d_l1_thresholds      -=   d_l1_thresholds   * learning_rate
-            d_l2_filter_group    -=   d_l2_filter_group * learning_rate
-            d_l2_thresholds      -=   d_l2_thresholds   * learning_rate
-            d_fc_weights         -=   d_fc_weights      * learning_rate
-            d_fc_thresholds      -=   d_fc_thresholds   * learning_rate
+            l1_filter_pile     -=   d_l1_filter_pile  * learning_rate
+            l1_thresholds      -=   d_l1_thresholds   * learning_rate
+            l2_filter_group    -=   d_l2_filter_group * learning_rate
+            l2_thresholds      -=   d_l2_thresholds   * learning_rate
+            fc_weights         -=   d_fc_weights      * learning_rate
+            fc_thresholds      -=   d_fc_thresholds   * learning_rate
             
             
         # train() is completed without errors
