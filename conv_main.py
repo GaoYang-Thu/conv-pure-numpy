@@ -6,7 +6,7 @@ Created on Wed May 30 09:59:26 2018
 """
 import numpy as np
 from img_defs import create_train_data_all, shuffle_and_create_validata_data, create_test_data_all
-from cnn_defs import conv2d, conv_single_pile, conv_pile_group, avg_pooling, relu, vector_and_concat, sigmoid, calculate_loss, generate_row_vector, generate_column_vector, reverse_vc, upsampling, paddle_zeros
+from cnn_defs import conv2d, conv_single_pile, conv_pile_group, avg_pooling, relu, vector_and_concat, sigmoid, calculate_loss, generate_row_vector, generate_column_vector, reverse_vc, upsampling, paddle_zeros, cnn_forward
 
 import config_cov as cf
 import cv2
@@ -160,7 +160,7 @@ if __name__ == '__main__':
             d_l1_output_before_pooling = upsampling(d_l1_output)
             
             d_l1_output_before_activation = d_l1_output_before_pooling * l1_output_before_pooling * (1 - l1_output_before_pooling)
-           
+            
             
             # d_l1_filter_pile
             d_l1_filter_pile = cf.L1_FILTER # same shape
@@ -192,16 +192,33 @@ if __name__ == '__main__':
         print('Training CNN is completed. \n')
         # train() is completed without errors
             
-            
-            
-            
+        
         # validate
+        
+        print('Validating CNN......')
+        
         for img_index in range(validating_data_size):
-            # feed each img in validating data through cnn, calculate loss and store it in validate_error
-            pass
+            
+            # feed each img in validating data through cnn
+            img = validating_data[img_index][0]
+            img = img - np.mean(img)
+            img = img / np.std(img)
+            img_true_label = generate_column_vector(validating_data[img_index][1])
+            
+            l1_output_validating = avg_pooling(sigmoid(conv_single_pile(img,l1_filter_pile) + l1_thresholds))
+            l2_output_validating = avg_pooling(sigmoid(conv_pile_group(l1_output_validating, l2_filter_group) + l2_thresholds))
+            
+            fc_input_validating = generate_column_vector(vector_and_concat(l2_output_validating))
+            final_label_validating = sigmoid(np.dot(fc_weights,fc_input_validating) + fc_thresholds)                     
+            final_label_validating = generate_column_vector(final_label_validating)
+            
+            # calculate loss and store it in validate_error
+            validate_error[img_index] = calculate_loss(img_true_label, final_label_validating)
+            
+            if (img_index+1) %10 == 0:
+                print('Current validating index = {} / Total validating_num = {}'.format(img_index+1, validating_data_size))
     
-    
-    
+        print('Validating is completed. \n')
     
     
     
