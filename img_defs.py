@@ -33,7 +33,9 @@ def label_img(img_name):
 
 
 
-def create_train_data():
+
+
+def create_train_data_all():
     '''
     read images in training dataset directory,
     resize all images to the same size,
@@ -63,26 +65,48 @@ def create_train_data():
             shuffle(training_data_all)
             np.save('training_data_all.npy',training_data_all)
     
+    
     training_validating_size = training_data_all.shape[0]
-    
-    validation_data_size = int(validating_fraction * training_validating_size)
-    validating_data = training_data_all[-validation_data_size:]
-    
-    training_data_size = training_validating_size - validation_data_size
-    training_data = training_data_all[:training_data_size]
-    
     print('Training + Validating = {} data points'.format(training_validating_size))
-    print('Training              = {} data points'.format(training_data_size))
-    print('Validating            = {} data points'.format(validation_data_size))
+
     
     print('image size = {} * {} \n'.format(img_size, img_size))
     
-    return training_data, validating_data, training_data_size
+    return training_data_all
 
 
 
 
-def process_test_data():
+
+
+
+
+def shuffle_and_create_validata_data(training_data_all):
+    
+    training_validating_size = training_data_all.shape[0]
+    indices = np.random.permutation(training_validating_size)
+    
+    validation_data_size = int(validating_fraction * training_validating_size)
+    
+    training_idx, validating_idx = indices[:validation_data_size],indices[validation_data_size:]
+    
+    training_data, validating_data = training_data_all[training_idx,:],training_data_all[validating_idx,:]
+    
+    print('Training              = {} data points'.format(len(training_idx)))
+    print('Validating            = {} data points'.format(len(validating_idx)))
+    
+    return training_data, validating_data
+
+
+
+
+
+
+
+
+
+
+def create_test_data_all():
     '''
     read images in testing dataset directory,
     resize all images to the same size,
