@@ -28,6 +28,7 @@ This repo builds a multi-layer convolutional neural network with numpy, and with
     3. achieved backprobagation of the entire convolutional network!! :sunglasses::clap:
     4. output training data size, validation data size, testing data size and image size at the data generation process, to make data profiles clear
     5. finished the validation part
+    6. saved validating_error and training_error arries
 * Next: 
     1. visualize all feature maps *(optional)*
     2. wrap forward and backward processes into cnn_forward() and cnn_backward() functions.
