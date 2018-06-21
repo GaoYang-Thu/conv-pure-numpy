@@ -88,7 +88,8 @@ def shuffle_and_create_validata_data(training_data_all):
     
     validation_data_size = int(validating_fraction * training_validating_size)
     
-    training_idx, validating_idx = indices[:validation_data_size],indices[validation_data_size:]
+    # take last fraction as validation, keep the rest as training
+    validating_idx, training_idx = indices[-validation_data_size:],indices[:-validation_data_size]
     
     training_data, validating_data = training_data_all[training_idx,:],training_data_all[validating_idx,:]
     

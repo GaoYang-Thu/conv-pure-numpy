@@ -35,7 +35,9 @@ fc_weights = cf.FULLY_CONNECT_WEIGHTS
 l1_thresholds = cf.L1_THRESHOLDS
 l2_thresholds = cf.L2_THRESHOLDS
 fc_thresholds = cf.FULLY_CONNECT_THRESHOLDS
-    
+
+print('Total epoch num = {}'.format(epoch_num))
+
 ''' train '''
 for epoch_index in range(epoch_num):
         
@@ -49,6 +51,7 @@ for epoch_index in range(epoch_num):
     # train()?
     print('\n')
     print('Training CNN......')
+    
         
     for img_index in range(training_data.shape[0]):
             

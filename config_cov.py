@@ -29,7 +29,7 @@ FINAL_DIMENSION = 2 # label length
 
 TESTING_DATA_SIZE = 3000
 VALIDATING_FRACTION = 0.2
-EPOCH_NUM = 4
+EPOCH_NUM = 20
 
 # layer 1 filter pile and thresholds
 
