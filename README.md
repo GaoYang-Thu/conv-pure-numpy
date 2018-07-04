@@ -30,8 +30,9 @@ This repo builds a multi-layer convolutional neural network with numpy, and with
     5. finished the validation part
     6. saved validating_error and training_error arries
 * Next: 
-    1. visualize all feature maps *(optional)*
-    2. wrap forward and backward processes into cnn_forward() and cnn_backward() functions.
+    1. 现在用的损失函数是`MSE`，不适合分类问题。应该换成`CrossEntropyLoss`。
+    2. visualize all feature maps *(optional)*
+    3. wrap forward and backward processes into cnn_forward() and cnn_backward() functions *(also optional)*
     
 ## *References*
 1. [仅用numpy完成卷积神经网络](https://m.aliyun.com/yunqi/articles/585741)
